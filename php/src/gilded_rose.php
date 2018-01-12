@@ -18,6 +18,8 @@ class GildedRose {
                         } else {
                             $item->quality = $item->quality - 1;
                         }
+                    } else {
+                        $item->quality = 80;
                     }
                 }
             } else {
