@@ -19,7 +19,7 @@ class GildedRose {
                 $item->quality = 80;
             }
             if (($item->name != 'Aged Brie') and ( stripos($item->name, 'Backstage passes') === FALSE )) {
-                if ($item->quality > 0) {
+                if ($item->quality > 0) {  //if qulaity was 1 then for conjored it could go below 0
                     if ($item->name != 'Sulfuras, Hand of Ragnaros') {
                         if (stripos($item->name, 'Conjured') !== FALSE ) {
                             $item->quality = $item->quality - 2;
