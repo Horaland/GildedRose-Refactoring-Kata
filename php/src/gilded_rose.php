@@ -18,10 +18,10 @@ class GildedRose {
             if ($item->name == 'Sulfuras, Hand of Ragnaros') {
                 $item->quality = 80;
             }
-            if (($item->name != 'Aged Brie') and ( strpos($item->name, 'Backstage passes') === FALSE )) {
+            if (($item->name != 'Aged Brie') and ( stripos($item->name, 'Backstage passes') === FALSE )) {
                 if ($item->quality > 0) {
                     if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                        if (strpos($item->name, 'Conjured') !== FALSE ) {
+                        if (stripos($item->name, 'Conjured') !== FALSE ) {
                             $item->quality = $item->quality - 2;
                         } else {
                             $item->quality = $item->quality - 1;
@@ -31,7 +31,7 @@ class GildedRose {
             } else {
                 if ($item->quality < 50) {
                     $item->quality = $item->quality + 1;
-                    if (strpos($item->name, 'Backstage passes') !== FALSE ) {
+                    if (stripos($item->name, 'Backstage passes') !== FALSE ) {
                         if ($item->sell_in < 11) {
                             if ($item->quality < 50) {
                                 $item->quality = $item->quality + 1;
@@ -49,12 +49,12 @@ class GildedRose {
             
             if ($item->sell_in < 0) {
                 if ($item->name != 'Aged Brie') {
-                    if (strpos($item->name, 'Backstage passes') !== FALSE ) {
+                    if (stripos($item->name, 'Backstage passes') !== FALSE ) {
                         $item->quality = 0;
                     } else {
                         if ($item->quality > 0) {
                             if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                                if (strpos($item->name, 'Conjured') !== FALSE ) {
+                                if (stripos($item->name, 'Conjured') !== FALSE ) {
                                     $item->quality = $item->quality - 2;
                                 } else {
                                     $item->quality = $item->quality - 1;
