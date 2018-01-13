@@ -5,7 +5,7 @@ class GildedRoseTest extends \PHPUnit_Framework_TestCase {
 
     function testNormal() {
         $items = array(
-            new Item("Aardvark", 2, 4),
+            Item_Factory::build("Aardvark", 2, 4),
         );
         $gildedRose = new GildedRose($items);
         //inital value check
@@ -24,8 +24,8 @@ class GildedRoseTest extends \PHPUnit_Framework_TestCase {
     
     function testAgedBrie() {
         $items = array(
-            new Item("Aged Brie", 2, 10),
-            new Item("Aged Brie", 2, 50)
+            Item_Factory::build("Aged Brie", 2, 10),
+            Item_Factory::build("Aged Brie", 2, 50)
         );
         $gildedRose = new GildedRose($items);
         //inital value check
@@ -40,16 +40,16 @@ class GildedRoseTest extends \PHPUnit_Framework_TestCase {
         $gildedRose->update_quality();
         $this->assertEquals(14, $items[0]->quality);
         $this->assertEquals(-1, $items[0]->sell_in);
-        $this->assertEquals(50, $items[1]->quality);
+        $this->assertEquals(50, $items[1]->quality); //chec that we never excced 50 quality
     }
 
     function testSulfuras() {
         $items = array(
-            new Item("Sulfuras, Hand of Ragnaros", 2, 20),
+            Item_Factory::build("Sulfuras, Hand of Ragnaros", 2, 20),
         );
         $gildedRose = new GildedRose($items);
         //inital value check
-        $this->assertEquals(20, $items[0]->quality);
+        $this->assertEquals(80, $items[0]->quality);
         $this->assertEquals(2, $items[0]->sell_in);
         $gildedRose->update_quality(); //never age and always 80 quality
         $this->assertEquals(80, $items[0]->quality);
@@ -64,7 +64,7 @@ class GildedRoseTest extends \PHPUnit_Framework_TestCase {
     
     function testBackstage() {
         $items = array(
-            new Item("Backstage passes to a TAFKAL80ETC concert", 12, 20),
+            Item_Factory::build("Backstage passes to a TAFKAL80ETC concert", 12, 20),
         );
         $gildedRose = new GildedRose($items);
         //inital value check
@@ -100,7 +100,7 @@ class GildedRoseTest extends \PHPUnit_Framework_TestCase {
     
     function testConjured() {
         $items = array(
-            new Item("Conjured Elephant", 2, 8),
+            Item_Factory::build("Conjured Elephant", 2, 8),
         );
         $gildedRose = new GildedRose($items);
         //inital value check

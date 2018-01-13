@@ -10,66 +10,123 @@ class GildedRose {
 
     function update_quality() {
         foreach ($this->items as $item) {
-            if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                $item->sell_in = $item->sell_in - 1;
-            }
-            
-            
-            if ($item->name == 'Sulfuras, Hand of Ragnaros') {
-                $item->quality = 80;
-            }
-            if (($item->name != 'Aged Brie') and ( stripos($item->name, 'Backstage passes') === FALSE )) {
-                if ($item->quality > 0) {  //if qulaity was 1 then for conjored it could go below 0
-                    if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                        if (stripos($item->name, 'Conjured') !== FALSE ) {
-                            $item->quality = $item->quality - 2;
-                        } else {
-                            $item->quality = $item->quality - 1;
-                        }
-                    } 
-                }
-            } else {
-                if ($item->quality < 50) {
-                    $item->quality = $item->quality + 1;
-                    if (stripos($item->name, 'Backstage passes') !== FALSE ) {
-                        if ($item->sell_in < 11) {
-                            if ($item->quality < 50) {
-                                $item->quality = $item->quality + 1;
-                            }
-                        }
-                        if ($item->sell_in < 6) {
-                            if ($item->quality < 50) {
-                                $item->quality = $item->quality + 1;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            
-            if ($item->sell_in < 0) {
-                if ($item->name != 'Aged Brie') {
-                    if (stripos($item->name, 'Backstage passes') !== FALSE ) {
-                        $item->quality = 0;
-                    } else {
-                        if ($item->quality > 0) {
-                            if ($item->name != 'Sulfuras, Hand of Ragnaros') {
-                                if (stripos($item->name, 'Conjured') !== FALSE ) {
-                                    $item->quality = $item->quality - 2;
-                                } else {
-                                    $item->quality = $item->quality - 1;
-                                }
-                            }
-                        }
-                    } 
-                        
-                } else {
-                    if ($item->quality < 50) {
-                        $item->quality = $item->quality + 1;
-                    }
-                }
-            }
+            $item->update_quality();
         }
+    }    
+    
+    function kill_goblin() {
+        if (isset($goblin)) {
+            unset($goblin);
+        }
+        echo "Thwack... gurgle, gurgle, thunk.";
+        $this->items[] = Item_Factory::build('Dead Goblin', 0, 0);
+    } 
+}
+
+class Item_Basic extends Item {
+    
+    function update_quality() {
+        $this->sell_in = $this->sell_in - 1;
+        $this->quality = $this->quality - 1;
+        if ($this->sell_in < 0) {
+            $this->quality = $this->quality - 1;
+        }
+    }
+}
+
+
+class Item_Aged_Brie extends Item {
+    
+    /**
+     * Brie improves with age, twice as fast after the sellby date
+     * can't be more that 50 quality
+     */
+    function update_quality() {
+        $this->sell_in = $this->sell_in - 1;
+        $this->quality = $this->quality + 1;
+        if ($this->sell_in < 0 ) {
+            $this->quality = $this->quality + 1;
+        }
+        if ($this->quality > 50) {
+            $this->quality = 50;
+        }
+    }
+}
+
+class Item_Backstage_Pass extends Item {
+    
+    function update_quality() {
+        $this->sell_in = $this->sell_in - 1;
+        if ($this->sell_in >= 0) {
+            $this->quality = $this->quality + 1;
+            if ($this->sell_in <= 10) {
+                $this->quality = $this->quality + 1;
+            }
+            if ($this->sell_in <= 5) {
+                $this->quality = $this->quality + 1;
+            }
+        } else {
+            $this->quality = 0;
+        }
+        if ($this->quality > 50) {
+            $this->quality = 50;
+        }
+    }
+}
+
+class Item_Sulfuras_Hand_Of_Ragnaros extends Item {
+    
+    /**
+     * 
+     * @param type $name
+     * @param type $sell_in
+     * @param type $quality
+     */
+    function __construct($name, $sell_in, $quality) {
+        $this->name = $name;
+        $this->sell_in = $sell_in;
+        $this->quality = 80;
+    }
+    
+    function update_quality() {
+        $this->sell_in = $this->sell_in;
+        $this->quality = 80;
+    }
+}
+
+class Item_Conjured extends Item {
+    
+    function update_quality() {
+        $this->sell_in = $this->sell_in - 1;
+        $this->quality = $this->quality - 2;
+        if ($this->sell_in < 0) {
+            $this->quality = $this->quality - 2;
+        }
+        if ($this->quality < 0) {
+            $this->quality = 0;
+        }
+    }
+}
+
+
+
+class Item_Factory {
+    
+    public static function build($name, $sell_in, $quality)
+    {
+        $prodname = str_replace(' ', '_', $name); //replace spaces with _ cor class construction
+        $prodname = str_replace(',', '', $prodname); //remove commas for class construction
+        $product = "Item_" . mb_convert_case($prodname, MB_CASE_TITLE);
+        if(class_exists($product)) {
+          return new $product($name, $sell_in, $quality);
+        } elseif (stripos($name, 'Backstage passes') !== FALSE ) {
+          return new Item_Backstage_Pass($name, $sell_in, $quality);
+        } elseif (stripos($name, 'Conjured') !== FALSE ) {
+          return new Item_Conjured($name, $sell_in, $quality);
+        } else {    
+          return new Item_Basic($name, $sell_in, $quality);
+        }
+        
     }
 }
 
