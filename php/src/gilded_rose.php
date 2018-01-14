@@ -14,7 +14,14 @@ class GildedRose {
         }
     }    
     
+    /**
+     * Alterign the wrong code could be life threatening. 
+     * This function should kill the Goblin in the corner should he make 
+     * his presence felt.
+     * @global type $goblin
+     */
     function kill_goblin() {
+        global $goblin;
         if (isset($goblin)) {
             unset($goblin);
         }
